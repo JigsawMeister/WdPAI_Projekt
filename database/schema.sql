@@ -1,6 +1,7 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     role VARCHAR(20) NOT NULL DEFAULT 'user'
 );
@@ -36,14 +37,14 @@ CREATE TABLE ratings (
     recipe_id INT REFERENCES recipes(id) ON DELETE CASCADE
 );
 
-INSERT INTO users (username, password_hash, role) VALUES
-('admin', '$2y$10$examplehash', 'admin'),
-('user1', '$2y$10$examplehash', 'user');
+-- INSERT INTO users (username, email, password_hash, role) VALUES
+-- ('admin', 'email1@example.com', '$2y$10$examplehash', 'admin'),
+-- ('user1', 'email2@example.com', '$2y$10$examplehash', 'user');
 
-INSERT INTO collections (name, user_id) VALUES
-('Zupy', 1),
-('Desery', 1);
+-- INSERT INTO collections (name, user_id) VALUES
+-- ('Zupy', 1),
+-- ('Desery', 1);
 
-INSERT INTO recipes (title, description, ingredients, steps, user_id, collection_id) VALUES
-('Rosół', 'Tradycyjny polski rosół', 'woda, kurczak, marchew, seler, przyprawy', 'Gotować 2h', 1, 1),
-('Sernik', 'Klasyczny sernik', 'ser, cukier, jajka, spód', 'Piec 50 min', 1, 2);
+-- INSERT INTO recipes (title, description, ingredients, steps, user_id, collection_id) VALUES
+-- ('Rosół', 'Tradycyjny polski rosół', 'woda, kurczak, marchew, seler, przyprawy', 'Gotować 2h', 1, 1),
+-- ('Sernik', 'Klasyczny sernik', 'ser, cukier, jajka, spód', 'Piec 50 min', 1, 2);
