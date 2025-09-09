@@ -51,11 +51,55 @@ class User {
         $this->role = $role;
     }
 
-    public function register($username, $email, $password) {
-        
+    public function register() {
+        try {
+            $query = "SELECT id FROM {$this->table} WHERE email = :email";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':email', $this->email);
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                return false;
+            }
+
+            $query = "INSERT INTO {$this->table} (username, email, password_hash, role) VALUES (:username, :email, :password_hash, :role)";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':username', $this->username);
+            $stmt->bindParam(':email', $this->email);
+            $stmt->bindParam(':password_hash', $this->passwordHash);
+            $stmt->bindParam(':role', $this->role);
+
+            return $stmt->execute();
+        }
+        catch (PDOException $e) {
+            echo "Błąd rejestracji: " . $e->getMessage();
+            return false;
+        }
     }
 
     public function login($email, $password) {
+        try {
+            $query = "SELECT * FROM {$this->table} WHERE email = :email";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
 
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user && password_verify($password, $user['password_hash'])) {
+                return [
+                    'id' => $user['id'],
+                    'username' => $user['username'],
+                    'role' => $user['role']
+                ];
+            }
+            else {
+                return false;
+            }
+        }
+        catch (PDOException $e) {
+            echo "Błąd logowania: " . $e->getMessage();
+            return false;
+        }
     }
 }
