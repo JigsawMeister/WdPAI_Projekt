@@ -102,4 +102,17 @@ class User {
             return false;
         }
     }
+
+    public function getById($id) {
+        try {
+            $stmt = $this->conn->prepare("SELECT * FROM {$this->table} WHERE id = :id");
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+        }
+        catch (PDOException $e) {
+            echo "Błąd pobierania użytkownika: " . $e->getMessage();
+            return null;
+        }
+    }
 }
